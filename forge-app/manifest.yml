@@ -1,0 +1,57 @@
+app:
+  id: ari:cloud:ecosystem::app/REPLACE-WITH-YOUR-APP-ID
+  name: tamagotchi-p1
+
+modules:
+  jira:issuePanel:
+    - key: tamagotchi-issue-panel
+      function: issuePanel
+      title: Pet Habitat
+      description: View the pet tied to this issue.
+
+  jira:projectPage:
+    - key: tamagotchi-project-page
+      function: projectPage
+      title: Pet Habitat
+      description: Team pet overview for the project.
+
+  jira:dashboardGadget:
+    - key: tamagotchi-dashboard-gadget
+      function: dashboardGadget
+      title: Pet Habitat
+      description: Daily pet needs and status.
+
+  trigger:
+    - key: tamagotchi-issue-events
+      function: issueEvent
+      events:
+        - jira:issue_updated
+        - jira:issue_transitioned
+    - key: tamagotchi-comment-events
+      function: commentEvent
+      events:
+        - jira:issue_comment_created
+
+  scheduledTrigger:
+    - key: tamagotchi-daily-decay
+      function: dailyDecay
+      interval: day
+
+functions:
+  - key: issuePanel
+    handler: src/index.runIssuePanel
+  - key: projectPage
+    handler: src/index.runProjectPage
+  - key: dashboardGadget
+    handler: src/index.runDashboardGadget
+  - key: issueEvent
+    handler: src/events.handleIssueEvent
+  - key: commentEvent
+    handler: src/events.handleCommentEvent
+  - key: dailyDecay
+    handler: src/events.handleDailyDecay
+
+permissions:
+  scopes:
+    - read:jira-work
+    - read:jira-user
